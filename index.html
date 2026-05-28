@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ongs Family Finance</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <section id="loginPage" class="login-page">
+    <div class="login-card">
+      <div class="brand-logo">OFF</div>
+      <h1>Ongs Family Finance</h1>
+      <p>Sistem sederhana untuk mencatat pemasukan, pengeluaran, budget, tabungan, dan kesehatan keuangan keluarga.</p>
+      <form id="loginForm">
+        <label>Username</label>
+        <input id="username" type="text" placeholder="admin" required />
+        <label>Password</label>
+        <input id="password" type="password" placeholder="••••••••" required />
+        <button type="submit">Masuk</button>
+        <div id="loginMsg" class="msg"></div>
+      </form>
+      <small>Default awal: admin / ongsfamily123. Segera ubah password di Spreadsheet.</small>
+    </div>
+  </section>
+
+  <main id="appPage" class="app hidden">
+    <aside class="sidebar">
+      <div class="side-brand"><div class="brand-logo small">OFF</div><div><b>Ongs Family</b><span>Finance</span></div></div>
+      <button class="nav active" data-page="dashboard">Dashboard</button>
+      <button class="nav" data-page="quick">Input Cepat</button>
+      <button class="nav" data-page="transactions">Transaksi</button>
+      <button class="nav" data-page="budget">Budget</button>
+      <button class="nav" data-page="savings">Target Tabungan</button>
+      <button class="nav" data-page="report">Rekapitulasi</button>
+      <button id="logoutBtn" class="logout">Logout</button>
+    </aside>
+
+    <section class="content">
+      <header class="topbar">
+        <div><h2 id="pageTitle">Dashboard</h2><p id="todayLabel"></p></div>
+        <div class="profile"><span id="userLabel"></span></div>
+      </header>
+
+      <section id="dashboard" class="page show">
+        <div class="cards">
+          <div class="card"><span>Total Pemasukan</span><strong id="kpiIncome">Rp 0</strong></div>
+          <div class="card"><span>Total Pengeluaran</span><strong id="kpiExpense">Rp 0</strong></div>
+          <div class="card"><span>Saldo Bersih</span><strong id="kpiBalance">Rp 0</strong></div>
+          <div class="card"><span>Health Score</span><strong id="kpiScore">0/100</strong><small id="kpiStatus">-</small></div>
+        </div>
+        <div class="grid two">
+          <div class="panel"><h3>Cashflow Bulanan</h3><canvas id="cashflowChart"></canvas></div>
+          <div class="panel"><h3>Komposisi Pengeluaran</h3><canvas id="categoryChart"></canvas></div>
+        </div>
+        <div class="grid two">
+          <div class="panel"><h3>Progress Target Tabungan</h3><div id="savingProgress"></div></div>
+          <div class="panel"><h3>Insight Otomatis</h3><ul id="insights" class="insights"></ul></div>
+        </div>
+      </section>
+
+      <section id="quick" class="page">
+        <div class="panel"><h3>Input Cepat Keluarga</h3>
+          <div class="quick-buttons">
+            <button data-type="expense" data-category="Makan" data-priority="Wajib">+ Makan</button>
+            <button data-type="expense" data-category="Transportasi" data-priority="Penting">+ BBM/Transport</button>
+            <button data-type="expense" data-category="Belanja Rumah" data-priority="Wajib">+ Belanja Rumah</button>
+            <button data-type="expense" data-category="Hiburan" data-priority="Keinginan">+ Hiburan</button>
+            <button data-type="income" data-category="Gaji" data-priority="-">+ Gaji</button>
+            <button data-type="income" data-category="Honor/Proyek" data-priority="-">+ Honor/Proyek</button>
+          </div>
+          <form id="txForm" class="form-grid">
+            <input type="hidden" id="txId" />
+            <label>Tanggal<input id="txDate" type="date" required /></label>
+            <label>Jenis<select id="txType"><option value="income">Pemasukan</option><option value="expense">Pengeluaran</option></select></label>
+            <label>Kategori<input id="txCategory" list="categoryList" required /></label>
+            <label>Akun<select id="txAccount"><option>Cash</option><option>Bank</option><option>E-Wallet</option></select></label>
+            <label>Prioritas<select id="txPriority"><option>-</option><option>Wajib</option><option>Penting</option><option>Keinginan</option></select></label>
+            <label>Nominal<input id="txAmount" type="number" min="0" required placeholder="100000" /></label>
+            <label class="wide">Catatan<input id="txNote" placeholder="contoh: belanja mingguan" /></label>
+            <button type="submit">Simpan Transaksi</button>
+            <button type="button" id="resetForm" class="secondary">Reset</button>
+          </form>
+          <div id="txMsg" class="msg"></div>
+        </div>
+      </section>
+
+      <section id="transactions" class="page">
+        <div class="panel"><h3>Riwayat Transaksi</h3>
+          <div class="filters"><input id="searchBox" placeholder="Cari kategori/catatan"/><select id="filterType"><option value="all">Semua</option><option value="income">Pemasukan</option><option value="expense">Pengeluaran</option></select><input id="filterMonth" type="month"/></div>
+          <div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Jenis</th><th>Kategori</th><th>Akun</th><th>Prioritas</th><th>Nominal</th><th>Catatan</th><th>Aksi</th></tr></thead><tbody id="txTable"></tbody></table></div>
+        </div>
+      </section>
+
+      <section id="budget" class="page">
+        <div class="panel"><h3>Budget Bulanan</h3>
+          <form id="budgetForm" class="form-grid">
+            <label>Bulan<input id="budgetMonth" type="month" required /></label>
+            <label>Kategori<input id="budgetCategory" required /></label>
+            <label>Limit Budget<input id="budgetLimit" type="number" min="0" required /></label>
+            <button type="submit">Simpan Budget</button>
+          </form>
+          <div class="table-wrap"><table><thead><tr><th>Bulan</th><th>Kategori</th><th>Budget</th><th>Realisasi</th><th>Status</th></tr></thead><tbody id="budgetTable"></tbody></table></div>
+        </div>
+      </section>
+
+      <section id="savings" class="page">
+        <div class="panel"><h3>Target Tabungan & Dana Darurat</h3>
+          <form id="savingForm" class="form-grid">
+            <label>Nama Target<input id="savingName" required placeholder="Dana Darurat" /></label>
+            <label>Target Nominal<input id="savingTarget" type="number" min="0" required /></label>
+            <label>Terkumpul Saat Ini<input id="savingCurrent" type="number" min="0" required /></label>
+            <label>Deadline<input id="savingDeadline" type="date" required /></label>
+            <button type="submit">Simpan Target</button>
+          </form>
+          <div class="table-wrap"><table><thead><tr><th>Target</th><th>Nominal</th><th>Terkumpul</th><th>Progress</th><th>Deadline</th><th>Aksi</th></tr></thead><tbody id="savingTable"></tbody></table></div>
+        </div>
+      </section>
+
+      <section id="report" class="page">
+        <div class="panel"><h3>Rekapitulasi Keseluruhan</h3><div id="reportBox" class="report-box"></div><button onclick="window.print()">Print / Simpan PDF</button></div>
+      </section>
+    </section>
+  </main>
+  <datalist id="categoryList"><option>Makan</option><option>Transportasi</option><option>Belanja Rumah</option><option>Pendidikan</option><option>Kesehatan</option><option>Hiburan</option><option>Gaji</option><option>Honor/Proyek</option></datalist>
+  <script src="app.js"></script>
+</body>
+</html>
