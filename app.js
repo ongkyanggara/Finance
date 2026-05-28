@@ -1,4 +1,4 @@
-const API_URL = 'https://script.google.com/macros/s/AKfycbwpxg2E5B4u55MtE_zjziRcf5V-ei887yMwuro4HhvXcEh5R_KIGJqvNjXkqDBvMKSkRQ/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbzWgbppJBHYwOojp5iKSPgX3OUdJ1wyjtGi47Jfs_-9xd3dt55l64pne8FoVQOP3jgvmw/exec';
 const $ = id => document.getElementById(id);
 const money = n => new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(Number(n||0));
 const today = new Date().toISOString().slice(0,10); let state={user:null,token:null,transactions:[],budgets:[],savings:[]}; let charts={};
